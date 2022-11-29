@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  peer-1:
+    build:
+      context: ./peer
+    container_name: peer-1
+    ports:
+      - 5000
+  peer-2:
+    build:
+      context: ./peer
+    container_name: peer-2
+    ports:
+      - 5000
+  center:
+    build: ./center
+    ports:
+      - 3000
