@@ -1,7 +1,4 @@
 FROM python:3.11-alpine
-
 WORKDIR /usr/src/app
-
 COPY . .
-
-CMD [ "python", "./tunein2p2p.py" ]
+CMD ["python", "./peer.py", "peer-1"] 
