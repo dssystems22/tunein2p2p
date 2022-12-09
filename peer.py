@@ -1,60 +1,48 @@
 import socket
 
-IP = socket.gethostbyname(socket.gethostname())
-PORT = 3000
-ADDR = (IP, PORT)
 FORMAT = "utf-8"
 SIZE = 1024
 
-
 def main():
-
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect(ADDR)
+    print("Tune in to peer-to-peer!\nWhat's your port?")
+    IP = socket.gethostbyname(socket.gethostname())
+    PORT = int(input(">"))
+    client.bind((IP, PORT))
+    print("Port saved!")
 
     while True:
+        print("type \"help\" for help")
+        cmd = input(">")
+        match cmd:
+            case 'help':
+                print("Available commands: quit, displ, upl")
+            case 'quit':
+                break
+            case 'displ':
+                # I don't get what was the function of this DISPLAY
+                client.send(cmd.encode(FORMAT))
+            case 'upl':
+                client.listen(5)
+                print("testi")
+                # try:
+                #     client.connect(ADDR)
+                # except:
+                #     # send_data = f"{cmd}@{filename}@{text}"
+                #     # client.send(send_data.encode(FORMAT))
+                #     print("some errors happen")
+                # start sending
+            case 'downl':
+                port = input("Which port?")
+                client.connect((IP, port))
+                client_socket, address = client.accept()
+                print(f"[+] {address} is connected.")
+                # start receiving
+            case _:
+                print("No command found with name", cmd)
 
-        data = client.recv(SIZE).decode(FORMAT)
-        cmd, msg = data.split("@")
-
-        if cmd == "exit":
-            print(f"server:{msg}")
-            break
-        elif cmd == 'OK':
-            print(f"{msg}")
-
-        data = input(">>>>> ")
-        data = data.split(" ")
-        cmd = data[0]
-
-        if cmd == "MORE":
-            client.send(cmd.encode(FORMAT))
-
-        elif cmd == "QUIT":
-            client.send(cmd.encode(FORMAT))
-            break
-        elif cmd == "DISPLAY":
-            client.send(cmd.encode(FORMAT))
-        elif cmd == "DELETE":
-            client.send(f"{cmd}@{data[1]}".encode(FORMAT))
-
-        elif cmd == "UPLOAD":
-
-            path = data[1]
-            with open(f"{path}", "r")as f:
-
-                text = f.read()
-
-            filename = path.split("/")[-1]
-            try:
-                send_data = f"{cmd}@{filename}@{text}"
-                client.send(send_data.encode(FORMAT))
-            except:
-                print("some errors happen")
-
-    print("Disconncted")
     client.close()
-
+    print("Disconnected")
 
 if __name__ == "__main__":
     main()
