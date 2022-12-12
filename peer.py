@@ -1,14 +1,15 @@
 import socket
 
 FORMAT = "utf-8"
-SIZE = 1024
+SIZE = 2048
+
 
 def main():
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
     print("Tune in to peer-to-peer!\nWhat's your port?")
-    IP = socket.gethostbyname(socket.gethostname())
+    IP = socket.gethostname()
     PORT = int(input(">"))
-    client.bind((IP, PORT))
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print("Port saved!")
 
     while True:
@@ -16,33 +17,25 @@ def main():
         cmd = input(">")
         match cmd:
             case 'help':
-                print("Available commands: quit, displ, upl")
+                print("Available commands: quit, displ, upl, downl")
             case 'quit':
                 break
             case 'displ':
-                # I don't get what was the function of this DISPLAY
-                client.send(cmd.encode(FORMAT))
+                print("comming soon")
             case 'upl':
-                client.listen(5)
-                print("testi")
-                # try:
-                #     client.connect(ADDR)
-                # except:
-                #     # send_data = f"{cmd}@{filename}@{text}"
-                #     # client.send(send_data.encode(FORMAT))
-                #     print("some errors happen")
-                # start sending
+                client.bind((IP, PORT))
+                client.listen(PORT)
+                connection, address = client.accept()
+                print("Peers are connected")
             case 'downl':
-                port = input("Which port?")
-                client.connect((IP, port))
-                client_socket, address = client.accept()
-                print(f"[+] {address} is connected.")
-                # start receiving
+                addresspeer = int(input("what is the peer's port :"))
+                client.bind((IP, PORT))
+                client.connect((IP, addresspeer))
             case _:
                 print("No command found with name", cmd)
-
     client.close()
     print("Disconnected")
+
 
 if __name__ == "__main__":
     main()
