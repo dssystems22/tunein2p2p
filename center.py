@@ -8,11 +8,14 @@ ADDR = (IP, PORT)
 SIZE = 1024
 FORMAT = "utf-8"
 SEVER_DATA_PATH = "Testpath"
+LIST_PEERS = {}
 
 
 def handle_client(conn, addr):
-    print(f"Initialing Conncection {addr} connected.")
-    conn.send("OK@Tervetuola to File Server.".encode(FORMAT))
+    name = conn.recv(SIZE).decode(FORMAT)
+    print(f"Initialing Connection {name} with address {addr} connected.")
+    LIST_PEERS[addr] = name
+    conn.send(f"OK@Tervetuola to File Server {name}".encode(FORMAT))
 
     while True:
         data = conn.recv(SIZE).decode(FORMAT)
@@ -59,6 +62,14 @@ def handle_client(conn, addr):
 
             conn.send(send_data.encode(FORMAT))
 
+        elif cmd == "LIST_PEERS":
+            send_data = "OK@"
+            if len(LIST_PEERS.keys()) == 0:
+                send_data += "the sever doesnt have any peers"
+            else:
+                send_data += "\n".join(f for f in LIST_PEERS.values())
+            conn.send(send_data.encode(FORMAT))
+
         elif cmd == "QUIT":
             break
         elif cmd == "MORE":
@@ -71,6 +82,7 @@ def handle_client(conn, addr):
 
             conn.send(data.encode(FORMAT))
     print(f"Disconncted {addr}")
+    LIST_PEERS.pop(addr)
     conn.close()
 
 

@@ -3,4 +3,10 @@ Tune in to peer-to-peer!
 
 ## Build
 
-`docker-compose up --build --remove-orphans`
+`python center.py`
+`python peer.py`
+
+## Commmands
+`DISPLAY`: List all files
+`LIST_PEERS` : List all peers
+`QUIT`: Quit and disconnect

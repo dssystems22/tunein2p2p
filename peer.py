@@ -12,6 +12,11 @@ def main():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect(ADDR)
 
+    # Naming
+    print("Choose your name:")
+    name = input()
+    client.send(f"{name}".encode(FORMAT))
+
     while True:
 
         data = client.recv(SIZE).decode(FORMAT)
@@ -51,6 +56,8 @@ def main():
                 client.send(send_data.encode(FORMAT))
             except:
                 print("some errors happen")
+        else:
+            client.send(cmd.encode(FORMAT))
 
     print("Disconncted")
     client.close()
