@@ -8,13 +8,16 @@ ADDR = (IP, PORT)
 SIZE = 1024
 FORMAT = "utf-8"
 SEVER_DATA_PATH = "Testpath"
-LIST_PEERS = {}
+DB = {}
 
 
 def handle_client(conn, addr):
     name = conn.recv(SIZE).decode(FORMAT)
     print(f"Initialing Connection {name} with address {addr} connected.")
-    LIST_PEERS[addr] = name
+    DB[addr] = {
+        "name": name,
+        "files": []
+    }
     conn.send(f"OK@Tervetuola to File Server {name}".encode(FORMAT))
 
     while True:
@@ -64,10 +67,30 @@ def handle_client(conn, addr):
 
         elif cmd == "LIST_PEERS":
             send_data = "OK@"
-            if len(LIST_PEERS.keys()) == 0:
+            if len(DB.keys()) == 0:
                 send_data += "the sever doesnt have any peers"
             else:
-                send_data += "\n".join(f for f in LIST_PEERS.values())
+                send_data += "\n".join(val["name"] for val in DB.values())
+            conn.send(send_data.encode(FORMAT))
+
+        elif cmd == "LIST_FILES":
+            files = data[1].split(",")
+            DB[addr]["files"] = files
+            send_data = f"OK@Listed {len(files)} file(s)"
+            conn.send(send_data.encode(FORMAT))
+
+        elif cmd == "CHECK":
+            send_data = "OK@"
+            file_name = data[1]
+            peer_found = None
+            for peer in DB:
+                for file in DB[peer]["files"]:
+                    if file == file_name:
+                        peer_found = DB[peer]["name"]
+            if peer_found:
+                send_data += f"Peer {peer_found} has the file {file_name}"
+            else:
+                send_data += f"No one has file {file_name}"
             conn.send(send_data.encode(FORMAT))
 
         elif cmd == "QUIT":
@@ -82,7 +105,7 @@ def handle_client(conn, addr):
 
             conn.send(data.encode(FORMAT))
     print(f"Disconncted {addr}")
-    LIST_PEERS.pop(addr)
+    DB.pop(addr)
     conn.close()
 
 
