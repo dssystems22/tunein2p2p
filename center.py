@@ -19,7 +19,7 @@ def handle_client(conn, addr):
         data = data.split("@")
         cmd = data[0]
 
-        if cmd == 'DISPLAY':
+        if cmd == 'displ':
             files = os.listdir(SEVER_DATA_PATH)
             send_data = "OK@"
 
@@ -29,18 +29,29 @@ def handle_client(conn, addr):
                 send_data += "\n".join(f for f in files)
             conn.send(send_data.encode(FORMAT))
 
-        elif cmd == "UPLOAD":
+        elif cmd == "upl":
             name, text = data[1], data[2]
-            print("test!")
+            print("upload succesfully!")
             filepath = os.path.join(SEVER_DATA_PATH, name)
             with open(filepath, "w")as f:
                 f.write(text)
-            test=input()
+           
             try:
                 send_data = "OK@File Uploaded Successfully."
                 conn.send(send_data.encode(FORMAT))
             except:
                 print("The connection is lost")
+
+        elif cmd=="downl":
+                
+                path=data[1]
+                with open(f"{path}","r")as f:
+                        text=f.read()
+
+                filename=path.split("/")[-1]
+                send_data = f"{cmd}@{filename}@{text}"
+                conn.send(send_data.encode(FORMAT))
+        
 
         elif cmd == "DELETE":
             files = os.listdir(SEVER_DATA_PATH)

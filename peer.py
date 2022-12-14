@@ -1,4 +1,5 @@
 import socket
+import os
 
 FORMAT = "utf-8"
 SIZE = 2048
@@ -14,7 +15,7 @@ def main():
 
     while True:
         print("type \"help\" for help")
-        cmd = input(">")
+        cmd = input(">>>")
         match cmd:
             case 'help':
                 print("Available commands: quit, displ, upl, downl")
@@ -23,14 +24,70 @@ def main():
             case 'displ':
                 print("comming soon")
             case 'upl':
+              
+              
                 client.bind((IP, PORT))
                 client.listen(PORT)
-                connection, address = client.accept()
-                print("Peers are connected")
+                conn,addr=client.accept()
+                print("{}is connected",addr)
+              
+               
+                filename="docker.txt"
+                with open(filename, "rb") as f:
+                    while True:
+        # read the bytes from the file
+                        bytes_read = f.read(SIZE)
+                        if not bytes_read:
+            # file transmitting is done
+                            break
+        # we use sendall to assure transimission in 
+        # busy networks
+                client.sendall(bytes_read)
+# close the socket
+                client.close()
+
+                
+                
+
+
+           
+              
+                
+                
+              
+
             case 'downl':
                 addresspeer = int(input("what is the peer's port :"))
                 client.bind((IP, PORT))
                 client.connect((IP, addresspeer))
+                
+                filename="docker.txt"
+                with open(filename, "wb") as f:
+                    while True:
+        # read 1024 bytes from the socket (receive)
+                        bytes_read = client.recv(SIZE)
+                        if not bytes_read:    
+            # nothing is received
+            # file transmitting is done
+                         break
+        # write to the file the bytes we just received
+                        f.write(bytes_read)
+
+# close the client socket
+                client.close()
+# close the server socket
+                client.close()
+                
+               
+                
+
+              
+
+
+
+
+
+
             case _:
                 print("No command found with name", cmd)
     client.close()
