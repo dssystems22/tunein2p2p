@@ -26,4 +26,6 @@ In peer 1:
 In peer 2:
 - `LIST_PEERS`: Check peers
 - `CHECK`: check a file name
-- 
+
+End in each peer:
+- `QUIT`: Quit and disconnect
