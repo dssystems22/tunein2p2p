@@ -2,8 +2,8 @@ import socket
 import os
 
 FORMAT = "utf-8"
-SIZE = 2048
-SEPARATOR = "S"
+SIZE = 1024
+
 
 
 def main():
@@ -35,6 +35,7 @@ def main():
                     while True:
                         bytes_read = f.read(SIZE)
                         if not bytes_read:
+                            print("download fail")
                             break
                         conn.sendall(bytes_read)
                 conn.close()
@@ -47,9 +48,10 @@ def main():
                     while True:
                         bytes_read = client.recv(SIZE)
                         if not bytes_read:
+                            print("upload fail")
                             break
                         f.write(bytes_read)
-                        print(f)
+                       
             case _:
                 print("No command found with name", cmd)
     client.close()
