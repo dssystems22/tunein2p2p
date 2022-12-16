@@ -3,16 +3,19 @@ import os
 
 FORMAT = "utf-8"
 SIZE = 2048
+SEPARATOR = "S"
 
 
 def main():
-
     print("Tune in to peer-to-peer!\nWhat's your port?")
     IP = socket.gethostname()
     PORT = int(input(">"))
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print("Port saved!")
-
+    if not (os.path.exists("peers")):
+        os.mkdir("peers")
+    if not (os.path.exists("peers/"+str(PORT))):
+        os.mkdir("peers/"+str(PORT))
     while True:
         print("type \"help\" for help")
         cmd = input(">>>")
@@ -21,78 +24,35 @@ def main():
                 print("Available commands: quit, displ, upl, downl")
             case 'quit':
                 break
-            case 'displ':
-                print("comming soon")
             case 'upl':
-              
-              
                 client.bind((IP, PORT))
                 client.listen(PORT)
-                conn,addr=client.accept()
-                print("{}is connected",addr)
-              
-               
-                filename="docker.txt"
-                with open(filename, "rb") as f:
+                conn, addr = client.accept()
+                print("connected", addr)
+                filename = input("enter the file name: ")
+                conn.send(filename.encode(FORMAT))
+                with open("peers/"+str(PORT)+"/"+filename, "rb") as f:
                     while True:
-        # read the bytes from the file
                         bytes_read = f.read(SIZE)
                         if not bytes_read:
-            # file transmitting is done
                             break
-        # we use sendall to assure transimission in 
-        # busy networks
-                client.sendall(bytes_read)
-# close the socket
-                client.close()
-
-                
-                
-
-
-           
-              
-                
-                
-              
-
+                        conn.sendall(bytes_read)
+                conn.close()
             case 'downl':
                 addresspeer = int(input("what is the peer's port :"))
                 client.bind((IP, PORT))
                 client.connect((IP, addresspeer))
-                
-                filename="docker.txt"
-                with open(filename, "wb") as f:
+                filename = client.recv(SIZE).decode(FORMAT)
+                with open("peers/"+str(PORT)+"/"+filename, "wb") as f:
                     while True:
-        # read 1024 bytes from the socket (receive)
                         bytes_read = client.recv(SIZE)
-                        if not bytes_read:    
-            # nothing is received
-            # file transmitting is done
-                         break
-        # write to the file the bytes we just received
+                        if not bytes_read:
+                            break
                         f.write(bytes_read)
-
-# close the client socket
-                client.close()
-# close the server socket
-                client.close()
-                
-               
-                
-
-              
-
-
-
-
-
-
+                        print(f)
             case _:
                 print("No command found with name", cmd)
     client.close()
     print("Disconnected")
-
-
 if __name__ == "__main__":
     main()
