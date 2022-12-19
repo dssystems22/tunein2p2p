@@ -33,7 +33,7 @@ def main():
                 client.send(f"{PORT}".encode(FORMAT))
                 print(client.recv(SIZE).decode(FORMAT))
 
-            # list files
+            # after center
             case 'listfiles':
 
                 list_files = os.listdir("peers" + "/" + str(PORT))
@@ -42,11 +42,12 @@ def main():
                 client.send(send_data.encode(FORMAT))
                 print(client.recv(SIZE).decode(FORMAT))
 
-                # check files
+            # after center
             case 'listpeers':
                 client.send(cmd.encode(FORMAT))
                 print(client.recv(SIZE).decode(FORMAT))
 
+            # after center
             case 'check':
                 print("Which file do you check:")
                 file_name = input()
@@ -55,7 +56,7 @@ def main():
                 print(client.recv(SIZE).decode(FORMAT))
 
             case 'help':
-                print("Available commands: quit, displ, upl, downl, center")
+                print("Available commands: quit, upl, downl, center")
             case 'quit':
                 client.send(cmd.encode(FORMAT))
                 break
@@ -74,7 +75,7 @@ def main():
                         bytes_read = f.read(SIZE)
 
                         if not bytes_read:
-                            print("uploaded compepleted")
+                            print("upload completed")
                             break
                         conn.sendall(bytes_read)
 
@@ -94,7 +95,7 @@ def main():
                     while True:
                         bytes_read = client.recv(SIZE)
                         if not bytes_read:
-                            print("downloaded compepleted")
+                            print("download completed")
                             break
                         f.write(bytes_read)
                         end = time.time()
