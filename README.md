@@ -1,6 +1,7 @@
 # tunein2p2p
 Tune in to peer-to-peer!
 
-## Build
+## Running
+To transfer between two nodes enter the following command on both local terminals:
 
-`docker-compose up --build --remove-orphans`
+```python peer.py```
