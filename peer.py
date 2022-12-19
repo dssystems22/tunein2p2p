@@ -32,10 +32,8 @@ def main():
                 client.connect(ADDR)
                 client.send(f"{PORT}".encode(FORMAT))
                 print(client.recv(SIZE).decode(FORMAT))
-
             # after center
             case 'listfiles':
-
                 list_files = os.listdir("peers" + "/" + str(PORT))
                 send_data = f"{cmd}@"
                 send_data += ",".join(list_files)
@@ -46,7 +44,6 @@ def main():
             case 'listpeers':
                 client.send(cmd.encode(FORMAT))
                 print(client.recv(SIZE).decode(FORMAT))
-
             # after center
             case 'check':
                 print("Which file do you check:")
@@ -54,13 +51,10 @@ def main():
                 send_data = f"{cmd}@{file_name}"
                 client.send(send_data.encode(FORMAT))
                 print(client.recv(SIZE).decode(FORMAT))
-
             case 'help':
                 print("Available commands: quit, upl, downl, center")
             case 'quit':
-                client.send(cmd.encode(FORMAT))
                 break
-
             case 'upl':
                 client.bind((IP, PORT))
                 client.listen(PORT)
@@ -68,7 +62,6 @@ def main():
                 print("connected", addr)
                 filename = input("enter the file name: ")
                 conn.send(filename.encode(FORMAT))
-
                 with open("peers" + "/" + str(PORT) + "/" + filename, "rb") as f:
                     while True:
                         start = time.time()
@@ -84,7 +77,6 @@ def main():
                             print("time out!")
                             break
                     conn.close()
-
             case 'downl':
                 addresspeer = int(input("what is the peer's port :"))
                 client.bind((IP, PORT))
@@ -104,10 +96,8 @@ def main():
                             break
             case _:
                 print("No command found with name", cmd)
-    shutil.rmtree("peers/"+str(PORT))
+    #shutil.rmtree("peers/"+str(PORT))
     client.close()
     print("Disconnected")
-
-
 if __name__ == "__main__":
     main()

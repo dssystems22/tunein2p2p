@@ -41,11 +41,11 @@ def handle_client(conn, addr):
                 send_data = ""
                 file_name = data[1]
                 print(data)
-                peer_found = None
+                peer_found = []
                 for peer in DB:
                     for file in DB[peer]["files"]:
                         if file == file_name:
-                            peer_found = DB[peer]["name"]
+                            peer_found.append(DB[peer]["name"]) 
                 if peer_found:
                     send_data += f"Peer {peer_found} has the file {file_name}"
                 else:
